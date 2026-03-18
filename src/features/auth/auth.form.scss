@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:           #ffffff;
+  --bg-secondary: #f9fafb;
+  --fg:           #0a0a0a;
+  --muted:        #6b7280;
+  --hint:         #9ca3af;
+  --border:       #e5e7eb;
+  --border-md:    #d1d5db;
+  --accent:       #f97316;
+  --accent-dim:   rgba(249, 115, 22, 0.08);
+  --green:        #22c55e;
+  --sans:         'DM Sans', sans-serif;
+  --mono:         'DM Mono', monospace;
+  --radius:       10px;
+  --radius-lg:    16px;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg-secondary);
+  color: var(--fg);
+  min-height: 100vh;
+}
+
+/* ────────────────────────────────
+   MAIN — centers the card
+──────────────────────────────── */
+main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-secondary);
+
+  /* subtle dot grid background */
+  background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ────────────────────────────────
+   FORM CONTAINER
+──────────────────────────────── */
+.form-container {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 8px 32px rgba(0,0,0,0.07);
+
+  /* terminal topbar via pseudo-element */
+  &::before {
+    content: '';
+    display: block;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    /* dots drawn with box-shadow trick */
+    height: 38px;
+    background-image:
+      radial-gradient(circle, #ff5f57 5px, transparent 5px),
+      radial-gradient(circle, #febc2e 5px, transparent 5px),
+      radial-gradient(circle, #28c840 5px, transparent 5px);
+    background-size: 12px 12px, 12px 12px, 12px 12px;
+    background-position: 16px center, 34px center, 52px center;
+    background-repeat: no-repeat;
+  }
+
+  /* inner padding for content */
+  > h1,
+  > form,
+  > p {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  > h1 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--fg);
+    padding-top: 28px;
+    padding-bottom: 6px;
+  }
+
+  /* subtitle hint below heading */
+  > h1::after {
+    content: 'Sign in to continue';
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0;
+  }
+
+  > form {
+    padding-top: 24px;
+    padding-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  > p {
+    font-size: 13px;
+    color: var(--muted);
+    padding-top: 16px;
+    padding-bottom: 28px;
+    text-align: center;
+
+    a {
+      color: var(--fg);
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-md);
+      transition: border-color 0.15s;
+
+      &:hover {
+        border-color: var(--fg);
+      }
+    }
+  }
+}
+
+/* ────────────────────────────────
+   INPUT GROUP
+──────────────────────────────── */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  input {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--fg);
+    outline: none;
+    caret-color: var(--accent);
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+
+    &::placeholder {
+      color: var(--hint);
+      font-style: italic;
+    }
+
+    &:focus {
+      border-color: var(--border-md);
+      background: var(--bg);
+      box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.04);
+    }
+  }
+}
+
+/* ────────────────────────────────
+   BUTTONS
+──────────────────────────────── */
+.button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  letter-spacing: 0.2px;
+
+  &:active {
+    transform: translateY(0) !important;
+    box-shadow: none !important;
+  }
+}
+
+.primary-button {
+  background: var(--fg);
+  color: var(--bg);
+
+  &:hover {
+    background: #222;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    background: var(--border);
+    color: var(--hint);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.secondary-button {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border-md);
+
+  &:hover {
+    background: var(--bg-secondary);
+    border-color: var(--fg);
+  }
+}
+
+/* ────────────────────────────────
+   DIVIDER  (optional utility)
+──────────────────────────────── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--hint);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+}
+
+/* ────────────────────────────────
+   LOADING STATE
+──────────────────────────────── */
+main > h1 {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ────────────────────────────────
+   RESPONSIVE
+──────────────────────────────── */
+@media (max-width: 480px) {
+  .form-container {
+    > h1,
+    > form,
+    > p {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+}

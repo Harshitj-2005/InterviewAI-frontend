@@ -498,7 +498,7 @@ body {
 .roadmap-list {
   display: flex;
   flex-direction: column;
-  margin-top: 45vh;
+  margin-top: 0; // FIXED: was 45vh — completely broken on all screen sizes
 }
 
 .roadmap-card {
@@ -719,52 +719,8 @@ body {
 }
 
 // ────────────────────────────────
-//  RESPONSIVE
+//  DOWNLOAD BUTTON
 // ────────────────────────────────
-@media (max-width: 960px) {
-  :root { --right-w: 0px; }
-  .right-panel  { display: none; }
-  .report-layout { grid-template-columns: var(--sidebar-w) 1fr; }
-}
-
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .report-layout { grid-template-columns: 1fr; }
-  .report-main { padding: 24px 16px; }
-}
-
-@media (max-width: 620px) {
-  .report-layout { grid-template-columns: 1fr; }
-
-  .sidebar {
-    display: flex;
-    position: static;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    padding: 12px 10px;
-    flex-direction: row;
-    overflow-x: auto;
-  }
-
-  .sidebar-heading,
-  .sidebar-divider,
-  .sidebar-stats { display: none; }
-
-  .sidebar-nav {
-    flex-direction: row;
-    gap: 6px;
-    padding: 0;
-  }
-
-  .sidebar-item { white-space: nowrap; }
-
-  .report-main {
-    max-height: none;
-    padding: 20px 16px;
-  }
-}
-
 .nav-download-btn {
   display: flex;
   align-items: center;
@@ -779,6 +735,7 @@ body {
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
   white-space: nowrap;
+  flex-shrink: 0;
 
   svg {
     flex-shrink: 0;
@@ -793,5 +750,170 @@ body {
 
   &:active {
     background: #f3f4f6;
+  }
+}
+
+// ────────────────────────────────
+//  RESPONSIVE — 960px
+//  Hide right panel
+// ────────────────────────────────
+@media (max-width: 960px) {
+  .right-panel { display: none; }
+
+  .report-layout {
+    grid-template-columns: var(--sidebar-w) 1fr;
+  }
+}
+
+// ────────────────────────────────
+//  RESPONSIVE — 768px
+//  Hide left sidebar, single column
+// ────────────────────────────────
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+
+  .report-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .report-main {
+    padding: 24px 16px;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+// ────────────────────────────────
+//  RESPONSIVE — 620px
+//  Full mobile layout
+// ────────────────────────────────
+@media (max-width: 620px) {
+  // Navbar: 2-row grid layout
+  .report-nav {
+    height: auto;
+    min-height: var(--nav-h);
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 6px 10px;
+
+    .nav-logo         { grid-column: 1; grid-row: 1; margin-right: 0; }
+    .nav-download-btn { grid-column: 2; grid-row: 1; }
+    .nav-meta         { grid-column: 1; grid-row: 2; align-items: flex-start; }
+    .nav-score-wrap   {
+      grid-column: 2;
+      grid-row: 2;
+      border-left: none;
+      padding-left: 0;
+      align-items: flex-end;
+      min-width: auto;
+    }
+  }
+
+  // Download button: icon only on mobile
+  .nav-download-btn {
+    font-size: 0;       // hides text label
+    padding: 7px 9px;
+    gap: 0;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  // Layout: flex column so sidebar tab bar sits above content
+  .report-layout {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: unset;
+  }
+
+  // Sidebar: horizontal scrolling tab bar
+  .sidebar {
+    display: flex;
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .sidebar-heading,
+  .sidebar-divider,
+  .sidebar-stats { display: none; }
+
+  .sidebar-nav {
+    flex-direction: row;
+    gap: 6px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .sidebar-item {
+    white-space: nowrap;
+    padding: 7px 12px;
+    font-size: 12px;
+    width: auto;
+  }
+
+  // Main: natural document scroll
+  .report-main {
+    max-height: none;
+    overflow-y: visible;
+    padding: 20px 14px;
+  }
+
+  // Section header stacks vertically
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  // Question cards: tighter padding
+  .question-trigger {
+    padding: 13px 14px;
+  }
+
+  .question-body {
+    padding: 13px 14px 15px;
+  }
+
+  .question-text {
+    font-size: 13px;
+  }
+
+  // STAR guide: 2×2 grid instead of row
+  .star-guide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .star-step {
+    min-width: unset;
+    flex: unset;
+  }
+
+  // Roadmap: tighter gaps
+  .roadmap-card {
+    gap: 12px;
+  }
+
+  .roadmap-left {
+    width: 52px;
+  }
+
+  .roadmap-day-badge {
+    font-size: 10px;
+    padding: 3px 8px;
   }
 }

@@ -1,29 +1,35 @@
-import React, { useState, useRef } from 'react'
+
+import React, { useState, useRef, useEffect } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useinterview.js'
-import { useEffect } from "react";
 import { useAuth } from '../../auth/hooks/useAuth.js'
 import { useNavigate } from 'react-router'
 
 const Home = () => {
 
     const { loading, generateReport, reports } = useInterview()
-    const { user } = useAuth();
-
-    // useEffect(() => {
-    //     if (user) {
-    //         getReports();
-    //     }
-    // }, [user]);
+    const { user, handlelogout } = useAuth();
 
     const [jobDescription, setJobDescription] = useState("")
     const [selfDescription, setSelfDescription] = useState("")
     const [dragging, setDragging] = useState(false)
     const [resumeFile, setResumeFile] = useState(null)
+    const [profileOpen, setProfileOpen] = useState(false)
     const resumeInputRef = useRef()
-
+    const profileRef = useRef()
 
     const navigate = useNavigate()
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (profileRef.current && !profileRef.current.contains(e.target)) {
+                setProfileOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
 
     const handleFile = (file) => {
         if (file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.docx'))) {
@@ -50,6 +56,30 @@ const Home = () => {
             console.error('Error generating report:', error)
             alert('An error occurred while generating the report.')
         }
+    }
+
+    const handleLogoutClick = async () => {
+        setProfileOpen(false)
+        try {
+            await handlelogout()
+            navigate('/login')
+        } catch (error) {
+            console.error('Logout error:', error)
+        }
+    }
+
+    // Derive initials from user user name or email
+    const getInitials = () => {
+        if (!user) return '?'
+        if (user.username) {
+            return user.username
+                .split(' ')
+                .map(w => w[0])
+                .slice(0, 2)
+                .join('')
+                .toUpperCase()
+        }
+        return (user.email?.[0] ?? '?').toUpperCase()
     }
 
     const canSubmit = (resumeFile || resumeInputRef.current?.files?.[0] || selfDescription.trim().length > 10) && jobDescription.trim().length > 10
@@ -89,12 +119,54 @@ const Home = () => {
                     </div>
                     <span>InterviewAI</span>
                 </div>
+
                 <ul className="navbar-links">
                     <li><a href="#">Features</a></li>
                     <li><a href="#">Docs</a></li>
                     <li><a href="#">Pricing</a></li>
                 </ul>
-                <span className="navbar-badge">v1.0</span>
+
+                <div className="navbar-right">
+                    <span className="navbar-badge">v1.0</span>
+
+                    {/* Profile avatar + dropdown */}
+                    {user && (
+                        <div className="profile-wrap" ref={profileRef}>
+                            <button
+                                className={`profile-avatar${profileOpen ? ' active' : ''}`}
+                                onClick={() => setProfileOpen(prev => !prev)}
+                                aria-label="Open profile menu"
+                            >
+                                {getInitials()}
+                            </button>
+
+                            {profileOpen && (
+                                <div className="profile-dropdown">
+                                    {/* User info header */}
+                                    <div className="pd-header">
+                                        <div className="pd-avatar-lg">{getInitials()}</div>
+                                        <div className="pd-info">
+                                            <span className="pd-name">
+                                                {user.username || 'User'}
+                                            </span>
+                                            <span className="pd-email">{user.email}</span>
+                                        </div>
+                                    </div>
+
+
+
+                                    <button className="pd-item pd-item--danger" onClick={handleLogoutClick}>
+                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                            <path d="M5 2H3a1 1 0 00-1 1v8a1 1 0 001 1h2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                                            <path d="M9 10l3-3-3-3M12 7H5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                        Log out
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
             </nav>
 
             {/* ── HERO ── */}
@@ -274,21 +346,6 @@ const Home = () => {
                     </div>
                 </section>
             )}
-            {/* {reports.length > 0 && (
-                <section className='recent-reports'>
-                    <h2>My Recent Interview Plans</h2>
-                    <ul className='reports-list'>
-                        {reports.map(report => (
-                            <li key={report._id} className='report-item' onClick={() => navigate(`/interview/${report._id}`)}>
-                                <h3>{report.title || 'Untitled Position'}</h3>
-                                <p className='report-meta'>Generated on {new Date(report.createdAt).toLocaleDateString()}</p>
-                                <p className={`match-score ${report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low'}`}>Match Score: {report.matchScore}%</p>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
-            )} */}
-
 
             {/* ── SITE FOOTER ── */}
             <footer className="site-footer">

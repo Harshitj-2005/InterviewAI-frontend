@@ -30,7 +30,6 @@ export default function Interview() {
   const toggle = (id) => setExpanded(expanded === id ? null : id);
 
   // ── LOADING STATE ──────────────────────────────────────────────────────────
-  // Show spinner while fetch is in progress — never evaluate report during this time
   if (loading) {
     return (
       <div className="report-page">
@@ -111,6 +110,7 @@ export default function Interview() {
           Download PDF
         </button>
       </nav>
+
       {/* ── 3-COLUMN LAYOUT ── */}
       <div className="report-layout">
 
@@ -287,6 +287,48 @@ export default function Interview() {
               </div>
             </div>
           )}
+
+          {/* ── MOBILE-ONLY SUMMARY CARD ── */}
+          <div className="mobile-panel">
+            <div className="mobile-summary-card">
+              <div className="m-score-row">
+                <div className="m-score-viz">
+                  <svg width="64" height="64" viewBox="0 0 96 96">
+                    <circle cx="48" cy="48" r="38" fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="8" />
+                    <circle
+                      cx="48" cy="48" r="38" fill="none"
+                      stroke={scoreColor}
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={2 * Math.PI * 38}
+                      strokeDashoffset={2 * Math.PI * 38 * (1 - score / 100)}
+                      transform="rotate(-90 48 48)"
+                      style={{ transition: 'stroke-dashoffset 1s ease' }}
+                    />
+                  </svg>
+                  <span className="m-score-val" style={{ color: scoreColor }}>{score}%</span>
+                </div>
+                <div className="m-score-info">
+                  <span className="m-label">Match Score</span>
+                  <span className="m-status" style={{ color: scoreColor }}>{scoreLabel}</span>
+                </div>
+              </div>
+
+              <div className="m-divider" />
+
+              <div className="m-gaps-section">
+                <p className="m-section-title">Skill Gaps</p>
+                <div className="m-skill-tags">
+                  {report.skillGaps?.map((sg, i) => (
+                    <div key={i} className={`m-skill-tag m-sev-${sg.severity}`}>
+                      <span className={`m-sev-dot m-dot-${sg.severity}`} />
+                      <span className="m-skill-name">{sg.skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
         </main>
 

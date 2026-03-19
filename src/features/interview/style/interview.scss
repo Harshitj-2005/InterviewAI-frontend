@@ -498,7 +498,7 @@ body {
 .roadmap-list {
   display: flex;
   flex-direction: column;
-  margin-top: 0; // FIXED: was 45vh — completely broken on all screen sizes
+  margin-top: 45vh; // FIXED: was 45vh — completely broken on all screen sizes
 }
 
 .roadmap-card {
